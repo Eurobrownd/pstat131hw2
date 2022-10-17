@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
   library(tidymodels)
   library(corrplot)
   library(ggthemes)
+  library(ISLR)
   tidymodels_prefer()
   getwd()
   abaloneD <- read.csv(file= "data/abalone.csv")
@@ -40,13 +41,14 @@ set.seed(115)
 abalone_split <- initial_split(abaloneD, prop = 0.8, strata = age)
 abalone_train <- training(abalone_split)
 abalone_test <- testing(abalone_split)
-?recipe()
 ```
 
 ```{r}
+?step_interact()
 abalone_recipe <- recipe(age ~ ., data = abalone_train) %>% 
   step_rm(rings) %>% 
-  step_dummy(all_nominal_predictors())
+  step_dummy(all_nominal_predictors()) %>% 
+  step_interact(~shucked_weight:type_M + diamter:longest_shell + shell_weight:shucked_weight)
 abalone_recipe
 ```
 
@@ -54,3 +56,17 @@ There is no point trying to precit age using the rings variable since to count t
 we would have to cut the shell open and count using a microscope. The model is made
 to see if we can predict the age without the rings variable. 
 
+```{r}
+lm_model <- linear_reg() %>% 
+  set_engine("lm")
+```
+
+```{r}
+lm_wflow <- workflow() %>% 
+  add_model(lm_model) %>% 
+  add_recipe(abalone_recipe)
+```
+
+```{r}
+lm_fit <- fit(lm_wflow, abalone_train)
+```
