@@ -1,0 +1,31 @@
+---
+title: "hw2"
+author: "Simon Lee"
+date: "2022-10-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include= FALSE}
+{
+  library(ggplot2)
+  library(tidyverse)
+  library(tidymodels)
+  library(corrplot)
+  library(ggthemes)
+  tidymodels_prefer()
+  getwd()
+  abaloneD <- read.csv(file= "data/abalone.csv")
+}
+```
+
+```{r}
+abaloneD %>% 
+  mutate(age = rings+1.5) %>% 
+  select(age, everything()) %>% 
+  head()
+```
+
