@@ -32,12 +32,25 @@ abaloneD %>%
   geom_histogram(bins = 30)
 ```
 
+From the histogram the age of the abalones has a slight right skew and the mass
+of its distribution is centered around 5 and 15 years
 
 ```{r}
 set.seed(115)
 abalone_split <- initial_split(abaloneD, prop = 0.8, strata = age)
 abalone_train <- training(abalone_split)
 abalone_test <- testing(abalone_split)
+?recipe()
 ```
 
+```{r}
+abalone_recipe <- recipe(age ~ ., data = abalone_train) %>% 
+  step_rm(rings) %>% 
+  step_dummy(all_nominal_predictors())
+abalone_recipe
+```
+
+There is no point trying to precit age using the rings variable since to count the rings
+we would have to cut the shell open and count using a microscope. The model is made
+to see if we can predict the age without the rings variable. 
 
