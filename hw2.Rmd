@@ -23,9 +23,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-abaloneD %>% 
+abaloneD <- abaloneD %>% 
   mutate(age = rings+1.5) %>% 
-  select(age, everything()) %>% 
-  head()
+  select(age, everything())
+
+abaloneD %>% 
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 30)
 ```
+
+
+```{r}
+set.seed(115)
+abalone_split <- initial_split(abaloneD, prop = 0.8, strata = age)
+abalone_train <- training(abalone_split)
+abalone_test <- testing(abalone_split)
+```
+
 
