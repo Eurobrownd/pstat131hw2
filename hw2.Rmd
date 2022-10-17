@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
   abaloneD <- read.csv(file= "data/abalone.csv")
 }
 ```
-
+# Question 1
 ```{r}
 abaloneD <- abaloneD %>% 
   mutate(age = rings+1.5) %>% 
@@ -36,6 +36,7 @@ abaloneD %>%
 From the histogram the age of the abalones has a slight right skew and the mass
 of its distribution is centered around 5 and 15 years
 
+Question 2
 ```{r}
 set.seed(115)
 abalone_split <- initial_split(abaloneD, prop = 0.8, strata = age)
@@ -43,6 +44,7 @@ abalone_train <- training(abalone_split)
 abalone_test <- testing(abalone_split)
 ```
 
+Question 3
 ```{r}
 abalone_recipe <- recipe(age ~ type + longest_shell + diameter + height + whole_weight + shucked_weight + viscera_weight + shell_weight, data = abalone_train) %>% 
   step_dummy(all_nominal_predictors()) %>%
@@ -54,21 +56,23 @@ abalone_recipe <- recipe(age ~ type + longest_shell + diameter + height + whole_
 abalone_recipe
 ```
 
-There is no point trying to precit age using the rings variable since to count the rings
-we would have to cut the shell open and count using a microscope. The model is made
-to see if we can predict the age without the rings variable. 
+There is no point trying to predict age using the rings variable since the age response variable
+is calculated from rings. So it would be 100% compatiable with the testing data for the predictor rings
 
+Question 4
 ```{r}
 lm_model <- linear_reg() %>% 
   set_engine("lm")
 ```
 
+Question 5
 ```{r}
 lm_wflow <- workflow() %>% 
   add_model(lm_model) %>% 
   add_recipe(abalone_recipe)
 ```
 
+Question 6
 ```{r}
 lm_fit <- fit(lm_wflow, abalone_train)
 pred_abalone <- predict(lm_fit, data.frame(type = 'F', longest_shell = 0.5, diameter = 0.1,
@@ -77,6 +81,7 @@ pred_abalone <- predict(lm_fit, data.frame(type = 'F', longest_shell = 0.5, diam
 pred_abalone
 ```
 
+Question 7
 ```{r}
 library(yardstick)
 abalone_metric <- metric_set(rmse, rsq, mae)
